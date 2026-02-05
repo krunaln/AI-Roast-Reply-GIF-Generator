@@ -1,6 +1,6 @@
 # AI Roast Reply GIF Generator
 
-![AI Roaster Demo](https://ai-roaster-pi.vercel.app/api/gif?msg=how%20are%20you)
+![AI Roaster Demo](https://ai-roaster-pi.vercel.app/api/gif)
 
 Make a deterministic, README‑embeddable GIF that looks like a chat app roasting your message. No APIs, no LLMs, no external services. Just pure server‑generated pixels.
 
