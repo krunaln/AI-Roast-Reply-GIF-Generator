@@ -1,0 +1,15 @@
+{
+  "name": "ai-roast-reply-gif",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vercel:dev": "vercel dev"
+  },
+  "dependencies": {
+    "@vercel/node": "^2.15.10",
+    "omggif": "^1.0.10"
+  },
+  "devDependencies": {
+    "@types/omggif": "^1.0.5"
+  }
+}
