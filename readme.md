@@ -6,7 +6,7 @@ Make a deterministic, README‑embeddable GIF that looks like a chat app roastin
 
 If you want to add this to your README, drop in this Markdown:
 ```md
-![AI Roaster](https://ai-roaster-pi.vercel.app/api/gif?msg=how%20are%20you)
+![AI Roaster](https://ai-roaster-pi.vercel.app/api/gif)
 ```
 
 ## What It Does
@@ -37,14 +37,17 @@ npx vercel --prod
 `GET /api/gif`
 
 Query params:
-- `msg` (optional): text to roast (if omitted, uses a default pair)
+- `msg` (optional): text to roast (if omitted, a precomputed default pair is used)
 - `ai_msg` (optional): custom AI reply (requires `msg`, skips classifier)
-- `seed` (optional, number): deterministic variation
+- `seed` (optional, number): deterministic variation (also selects a deterministic default pair)
 - `w` (optional, number): width, default 480 (min 320, max 800)
 - `h` (optional, number): height, default 270 (min 200, max 600)
 - `scale` (optional, 1..3): pixel scale
 
-If `msg` is omitted, the API serves a precomputed default GIF from `/public/defaults/` (no redirect).
+Default behavior:
+- If `msg` is omitted, the API serves a **precomputed** default GIF from `/public/defaults/`.
+- If `seed` is omitted, that default is **random** and **not cached**.
+- If `seed` is provided, the default is deterministic and **cached**.
 
 Example:
 ```
