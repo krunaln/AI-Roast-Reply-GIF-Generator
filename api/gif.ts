@@ -32,7 +32,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const filePath = resolve(process.cwd(), "public", "defaults", `${idx}.gif`);
     const file = await readFile(filePath);
     res.setHeader("Content-Type", "image/gif");
-    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    if (seed === undefined) {
+      // Random selection should not be cached.
+      res.setHeader("Cache-Control", "no-store, max-age=0");
+    } else {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    }
     res.status(200).send(file);
     return;
   }
