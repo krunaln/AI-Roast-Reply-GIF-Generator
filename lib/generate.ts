@@ -2,14 +2,16 @@ import { Renderer, wrapText } from "./renderer.js";
 import { FONT_H, FONT_W, textWidth } from "./font.js";
 import { makeColorIndexMap, paletteToArray, rgbToKey, PALETTE } from "./palette.js";
 import { pickRoast, sanitizeMessage } from "./roast.js";
+import { DEFAULT_PAIRS } from "./defaults.js";
 import { GifWriter } from "omggif";
 
 export type GenerateOptions = {
   msg: string;
-  seed: number;
+  seed?: number;
   width: number;
   height: number;
   scale: number;
+  aiMsg?: string;
 };
 
 type FrameState = {
@@ -35,6 +37,8 @@ const COLORS = {
   send: PALETTE[11],
 };
 
+
+
 function keyToRgb(key: number): [number, number, number] {
   return [(key >> 16) & 0xff, (key >> 8) & 0xff, key & 0xff];
 }
@@ -43,7 +47,7 @@ function buildFrames(msg: string, roast: string): FrameState[] {
   const frames: FrameState[] = [];
   const intro = 6;
   const sendFrames = 3;
-  const idle = 10;
+  const idle = 24;
 
   for (let i = 0; i < intro; i++) {
     frames.push({ userInput: "", showUserBubble: false, aiText: "", sendPressed: false, frameIndex: frames.length });
@@ -217,9 +221,19 @@ export function generateGif(opts: GenerateOptions): Buffer {
   const width = opts.width * scale;
   const height = opts.height * scale;
 
-  const msgDisplay = sanitizeMessage(opts.msg, 80);
-  const msgTyping = sanitizeMessage(opts.msg, 40);
-  const roastDisplay = sanitizeMessage(pickRoast(msgDisplay, opts.seed), 140);
+  let userMsg = opts.msg || "";
+  let aiMsg = opts.aiMsg || "";
+  if (!userMsg) {
+    const idx = opts.seed === undefined ? Math.floor(Math.random() * DEFAULT_PAIRS.length) : Math.abs(opts.seed) % DEFAULT_PAIRS.length;
+    const pair = DEFAULT_PAIRS[idx];
+    userMsg = pair.user;
+    aiMsg = pair.ai.replace("{msg}", pair.user);
+  }
+
+  const msgDisplay = sanitizeMessage(userMsg, 80);
+  const msgTyping = sanitizeMessage(userMsg, 40);
+  const roastBase = aiMsg ? aiMsg : pickRoast(msgDisplay, opts.seed || 0);
+  const roastDisplay = sanitizeMessage(roastBase.replace("{msg}", msgDisplay), 140);
 
   const frames = buildFrames(msgTyping, roastDisplay);
   const maxFrames = 120;

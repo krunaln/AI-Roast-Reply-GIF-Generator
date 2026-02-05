@@ -37,16 +37,25 @@ npx vercel --prod
 `GET /api/gif`
 
 Query params:
-- `msg` (required): text to roast
+- `msg` (optional): text to roast (if omitted, uses a default pair)
+- `ai_msg` (optional): custom AI reply (requires `msg`, skips classifier)
 - `seed` (optional, number): deterministic variation
 - `w` (optional, number): width, default 480 (min 320, max 800)
 - `h` (optional, number): height, default 270 (min 200, max 600)
 - `scale` (optional, 1..3): pixel scale
 
+If `msg` is omitted, the API serves a precomputed default GIF from `/public/defaults/` (no redirect).
+
 Example:
 ```
 /api/gif?msg=ship%20it&seed=42&w=360&h=220&scale=1
 ```
+
+## Precompute Default GIFs
+```bash
+npm run generate:defaults
+```
+This writes files to `public/defaults/` that are served via Vercel’s CDN.
 
 ## Performance Tips
 This is pure JS pixel rendering, so runtime is roughly proportional to:
